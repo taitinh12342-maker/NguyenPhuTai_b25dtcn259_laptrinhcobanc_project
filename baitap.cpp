@@ -136,13 +136,32 @@ void addProduct() {
     } while(!(strcmp(p.unit, "cai") == 0 || strcmp(p.unit, "kg") == 0  || strcmp(p.unit, "hop") == 0));
 
 
-    do {
-        printf("Nhap so luong ton kho: ");
-        scanf("%d", &p.qty);
-        if (p.qty < 0) {
-            printf(" So luong phai >= 0!\n");
+    char qtyStr[20];
+int isNumber;
+
+do {
+    printf("Nhap so luong ton kho: ");
+    fflush(stdin);
+    fgets(qtyStr, sizeof(qtyStr), stdin);
+    qtyStr[strcspn(qtyStr, "\n")] = '\0';
+
+    isNumber = 1;
+    for (int i = 0; i < strlen(qtyStr); i++) {
+        if (qtyStr[i] < '0' || qtyStr[i] > '9') {
+            isNumber = 0;
+            break;
         }
-    } while (p.qty < 0);
+    }
+
+    if (!isNumber || strlen(qtyStr) == 0) {
+        printf("Chi duoc nhap so nguyen (=> 0)!\n");
+        continue;
+    }
+
+    p.qty = atoi(qtyStr);
+
+} while (!isNumber || p.qty < 0);
+
     p.status = 1;
     listProduct[n_product++] = p;
     printf("\n Them thanh cong!\n");
@@ -191,15 +210,12 @@ void updateProduct() {
     }
 
     Product *p = &listProduct[index];
-
-    printf("\n=== THONG TIN HIEN TAI ===\n");
+    printf("\n======= THONG TIN HIEN TAI =======\n");
     printf("Ma san pham (khong duoc sua): %s\n", p->productId);
     printf("Ten: %s\n", p->name);
     printf("Don vi: %s\n", p->unit);
     printf("So luong: %d\n", p->qty);
-
     printf("\n======= NHAP THONG TIN MOI =======\n");
-
     char newName[50];
     do {
         printf("Nhap ten moi: ");
@@ -207,46 +223,77 @@ void updateProduct() {
         newName[strcspn(newName, "\n")] = '\0';
 
         if (strlen(newName) == 0) {
-            printf(" Ten khong duoc de rong!\n");
+            printf("Ten khong duoc de rong!\n");
         }
 
     } while (strlen(newName) == 0);
     strcpy(p->name, newName);
 
-  char newUnit[20];
-
-do {
-    printf("Nhap don vi moi (cai / kg / hop): ");
-    fgets(newUnit, sizeof(newUnit), stdin);
-    newUnit[strcspn(newUnit, "\n")] = '\0';
-
-    if (strlen(newUnit) == 0) {
-        printf("Don vi khong duoc de rong!\n");
-        continue;
-    }
-
-    if (!(strcmp(newUnit, "cai") == 0 || strcmp(newUnit, "kg") == 0  ||strcmp(newUnit, "hop") == 0)) 
-    {
-        printf("Don vi khong hop le!\nChi chap nhan: cai, kg, hop.\n");
-    }
-
-} while (!(strcmp(newUnit, "cai") == 0 || strcmp(newUnit, "kg") == 0  ||strcmp(newUnit, "hop") == 0));
-
-    int newQty;
+    char newUnit[20];
     do {
-        printf("Nhap so luong moi (>= 0): ");
-        scanf("%d", &newQty);
+        printf("Nhap don vi moi (cai / kg / hop): ");
+        fgets(newUnit, sizeof(newUnit), stdin);
+        newUnit[strcspn(newUnit, "\n")] = '\0';
 
-        if (newQty < 0) {
-            printf(" So luong phai >= 0\n");
+        if (strlen(newUnit) == 0) {
+            printf("Don vi khong duoc rong!\n");
+            continue;
         }
 
-    } while (newQty < 0);
+        if (!(strcmp(newUnit, "cai") == 0 ||
+              strcmp(newUnit, "kg") == 0  ||
+              strcmp(newUnit, "hop") == 0)) 
+        {
+            printf("Don vi KHONG hop le!\n   Chi chap nhan: cai, kg, hop.\n");
+        }
+
+    } while (!(strcmp(newUnit, "cai") == 0 ||
+               strcmp(newUnit, "kg") == 0  ||
+               strcmp(newUnit, "hop") == 0));
+
+    strcpy(p->unit, newUnit);
+    
+    
+    char qtyStr[20];
+    int newQty;
+    int isNumber;
+
+    do {
+        printf("Nhap so luong moi (>= 0): ");
+        fgets(qtyStr, sizeof(qtyStr), stdin);
+        qtyStr[strcspn(qtyStr, "\n")] = '\0';
+
+        if (strlen(qtyStr) == 0) {
+            printf("? Khong duoc de trong!\n");
+            continue;
+        }
+        isNumber = 1;
+        for (int i = 0; i < strlen(qtyStr); i++) {
+            if (qtyStr[i] < '0' || qtyStr[i] > '9') {
+                isNumber = 0;
+                break;
+            }
+        }
+
+        if (!isNumber) {
+            printf("Chi duoc nhap so >= 0!\n");
+            continue;
+        }
+
+        newQty = atoi(qtyStr);
+
+        if (newQty < 0) {
+            printf("So luong phai >= 0!\n");
+        }
+
+    } while (!isNumber || newQty < 0);
+
     p->qty = newQty;
 
     printf("\n Cap nhat thanh cong!\n");
     system("pause");
 }
+
 
 
 
@@ -295,7 +342,7 @@ retry:
     key[strcspn(key, "\n")] = '\0';
 
     if (strlen(key) == 0) {
-        printf("\n! Khong duoc de trong. Nhap lai!\n");
+        printf("\n!Khong duoc de trong. Nhap lai!\n");
         goto retry;
     }
 
