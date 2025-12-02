@@ -519,8 +519,8 @@ void In_OutTransaction(Product listProduct[], int n_product){
         printf("\nNhap hang hoa ma %s thanh cong\n", id);
     }
 
-    printf("\nNhan Enter de tiep tuc...");
-    while(getchar() != '\n'); // Xóa b? d?m
+    printf("\nNhan Enter de tiep tuc...");	
+    while(getchar() != '\n');
     getchar();
 }
 
